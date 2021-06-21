@@ -3,15 +3,12 @@ const {ApolloServer, gql} = require('apollo-server-express')
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const mongoose = require('mongoose')
-
-
-
-
-
-
+require('dotenv').config();
 
 
 async function startServer() {
+
+    const DATABASE_URL = process.env.DATABASE_URL;
 
     const app = express()
     const apolloServer = new ApolloServer({
@@ -27,13 +24,14 @@ async function startServer() {
         res.send("Hello from express apollo server")
     });
 
-    await mongoose.connect("mongodb+srv://SeenitAdmin:RsMur97rE6LMuWC@cluster0.fhus6.mongodb.net/seenItDB?retryWrites=true&w=majority", {
+
+    await mongoose.connect(DATABASE_URL, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     });
     console.log('Mongoose is connected...')
 
-    app.listen(4000, () => console.log("Server is running on port 4000"))
+    app.listen(process.env.PORT || 4000, () => console.log("Server is running on port 4000"))
 
 
 }
