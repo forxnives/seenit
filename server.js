@@ -1,5 +1,5 @@
 const express = require('express')
-const {ApolloServer, gql} = require('apollo-server-express')
+const { ApolloServer, gql } = require('apollo-server-express')
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const mongoose = require('mongoose')
@@ -18,7 +18,7 @@ async function startServer() {
 
     await apolloServer.start()
 
-    apolloServer.applyMiddleware({app: app, path: '/gql'});
+    apolloServer.applyMiddleware({ app: app, path: '/gql' });
 
     app.use((req, res) => {
         res.send("Hello from express apollo server")

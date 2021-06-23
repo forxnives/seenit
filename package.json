@@ -20,10 +20,15 @@
   "homepage": "https://github.com/forxnives/seenit#readme",
   "dependencies": {
     "apollo-server-express": "^2.25.1",
+    "axios": "^0.21.1",
+    "better-redddit": "^1.2.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
-    "mongoose": "^5.12.14"
+    "mongoose": "^5.12.14",
+    "reddit-image-fetcher": "^2.0.7",
+    "reddit-search": "^1.1.0",
+    "redis-mock": "^0.56.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
