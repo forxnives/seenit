@@ -9,8 +9,10 @@ const { isCompositeType } = require('graphql');
 const resolvers = {
 
     Query: {
-        hello: () => {
-            return 'Hello World';
+
+        getAlbums: async (parent, args, context, info) => {
+            const albums = await Album.find()
+            return albums
         },
 
         getImgs: async (parent, { subreddits }, context, info) => {
@@ -64,9 +66,6 @@ const resolvers = {
                 ))
             }
 
-
-
-
             const rawResults = await axios.get(`https://www.reddit.com/subreddits/search.json?q=${query}`)
             const results = rawResults.data.data.children.reduce((accumulator, result) => {
                 accumulator.push(result.data.display_name)
@@ -79,12 +78,6 @@ const resolvers = {
 
 
     Mutation: {
-        createPost: async (parent, args, context, info) => {
-            const { title, description } = args.post;
-            const post = new Post({ title, description })
-            await post.save()
-            return post
-        },
 
         createAlbum: async (parent, { albumInput, imgInputs }, context, info) => {
 
@@ -104,37 +97,58 @@ const resolvers = {
 
             return album
 
-
-        },
-
-        deletePost: async (parent, { id }, context, info) => {
-            await Post.findByIdAndDelete(id)
-            return 'Post Deleted Successfully'
         },
 
 
+        deleteAlbum: async (parent, { id }, context, info) => {
+            await Album.findByIdAndDelete(id)
+            return "Album successfully deleted"
+        },
 
-        updatePost: async (parent, args, context, info) => {
-            const { id } = args
-            const updates = {}
-            const { title, description } = args.post;
 
-            if (title !== undefined) {
-                updates.title = title
+        updateAlbum: async (parent, { id, albumInput, imgInputs }, context, info) => {
+
+            const { title, description } = albumInput
+
+            const album = await Album.findById(id)
+
+            if (title) {
+                album.title = title
             }
-            if (description !== undefined) {
-                updates.description = description
+
+            if (description) {
+                album.description = description
             }
 
-            const post = await Post.findByIdAndUpdate(
-                id,
-                updates,
-                { new: true }
-            );
-            return post
+            if (imgInputs) {
+
+                for (let i=0; i<imgInputs.length; i++) {
+
+                    let contained = false
+
+                    for (let k=0; k<album.imgs.length; k++ ) {
+
+                        if (album.imgs[k]?.id.includes(imgInputs[i]?.id)) {
+                            // console.log('well dom')
+                            contained = true
+
+                            album.imgs[k] = {
+                                ...album.imgs[k],
+                                ...imgInputs[i]
+                            }
+                        }
+                    }
+
+                    if (!contained){
+                        album.imgs.push(imgInputs[i])
+                    }
+                }
+            }
+
+            await album.save()
+            return album
         }
     }
 };
 
 module.exports = resolvers;
-

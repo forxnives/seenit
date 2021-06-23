@@ -23,16 +23,6 @@ const typeDefs = gql`
 
     #############################################
 
-    type Post {
-        id: ID
-        title: String
-        description: String
-    }
-
-    input PostInput {
-        title: String
-        description: String
-    }
 
     input AlbumInput {
         title: String!
@@ -52,18 +42,18 @@ const typeDefs = gql`
     ##############################################
 
     type Query {
-        hello: String
+
         searchSubreddits(query: String!, nsfw: Boolean = false): [String!]! 
+        getAlbums: [Album!]!
         getImgs(subreddits: [String!]!): [Img!]!
-        getAllPosts: [Post]
-        getPost(id: ID): Post
+
     }
 
     type Mutation {
-        createPost(post: PostInput): Post
+
         createAlbum(albumInput: AlbumInput! , imgInputs: [ImgInput]): Album
-        deletePost(id: ID): String
-        updatePost(id: ID, post: PostInput): Post
+        deleteAlbum(id: ID): String
+        updateAlbum(id: ID, albumInput: AlbumInput!, imgInputs: [ImgInput]): Album
     }
 
 `
